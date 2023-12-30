@@ -68,8 +68,8 @@ require('lazy').setup({
   -- NOTE: First, some plugins that don't require any configuration
 
   -- Git related plugins
-  'tpope/vim-fugitive',
-  'tpope/vim-rhubarb',
+  --'tpope/vim-fugitive', --JAH rm
+  --'tpope/vim-rhubarb', --JAH rm
 
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
@@ -86,7 +86,7 @@ require('lazy').setup({
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
-      { 'j-hui/fidget.nvim', tag = 'legacy', opts = {} },
+      { 'j-hui/fidget.nvim',       tag = 'legacy', opts = {} },
 
       -- Additional lua configuration, makes nvim stuff amazing!
       'folke/neodev.nvim',
@@ -110,33 +110,34 @@ require('lazy').setup({
   },
 
   -- Useful plugin to show you pending keybinds.
-  { 'folke/which-key.nvim', opts = {} },
-  {
-    -- Adds git related signs to the gutter, as well as utilities for managing changes
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      -- See `:help gitsigns.txt`
-      signs = {
-        add = { text = '+' },
-        change = { text = '~' },
-        delete = { text = '_' },
-        topdelete = { text = '‾' },
-        changedelete = { text = '~' },
-      },
-      on_attach = function(bufnr)
-        vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
-        vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
-        vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
-      end,
-    },
-  },
+  { 'folke/which-key.nvim',  opts = {} },
+  --JAH rm {
+  --   -- Adds git related signs to the gutter, as well as utilities for managing changes
+  --   'lewis6991/gitsigns.nvim',
+  --   opts = {
+  --     -- See `:help gitsigns.txt`
+  --     signs = {
+  --       add = { text = '+' },
+  --       change = { text = '~' },
+  --       delete = { text = '_' },
+  --       topdelete = { text = '‾' },
+  --       changedelete = { text = '~' },
+  --     },
+  --     on_attach = function(bufnr)
+  --       vim.keymap.set('n', '<leader>gp', require('gitsigns').prev_hunk, { buffer = bufnr, desc = '[G]o to [P]revious Hunk' })
+  --       vim.keymap.set('n', '<leader>gn', require('gitsigns').next_hunk, { buffer = bufnr, desc = '[G]o to [N]ext Hunk' })
+  --       vim.keymap.set('n', '<leader>ph', require('gitsigns').preview_hunk, { buffer = bufnr, desc = '[P]review [H]unk' })
+  --     end,
+  --   },
+  -- },
 
   {
     -- Theme inspired by Atom
-    'navarasu/onedark.nvim',
+    --'navarasu/onedark.nvim',
+    'tomasiser/vim-code-dark',
     priority = 1000,
     config = function()
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'codedark'
     end,
   },
 
@@ -147,7 +148,7 @@ require('lazy').setup({
     opts = {
       options = {
         icons_enabled = false,
-        theme = 'onedark',
+        theme = 'codedark',
         component_separators = '|',
         section_separators = '',
       },
@@ -156,12 +157,15 @@ require('lazy').setup({
 
   {
     -- Add indentation guides even on blank lines
-    'lukas-reineke/indent-blankline.nvim',
-    -- Enable `lukas-reineke/indent-blankline.nvim`
-    -- See `:help indent_blankline.txt`
+    "lukas-reineke/indent-blankline.nvim",
+    main = "ibl",
     opts = {
-      char = '┊',
-      show_trailing_blankline_indent = false,
+      indent = {
+        char = '┊',
+      },
+      whitespace = {
+        remove_blankline_trail = false,
+      },
     },
   },
 
@@ -198,6 +202,43 @@ require('lazy').setup({
     build = ':TSUpdate',
   },
 
+  {
+    "NvChad/nvterm",
+    config = function()
+      require("nvterm").setup()
+    end,
+  },
+
+  {
+    "jay-babu/mason-null-ls.nvim",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      "williamboman/mason.nvim",
+      "jose-elias-alvarez/null-ls.nvim",
+    },
+    config = function()
+      require("mason-null-ls").setup({
+        ensure_installed = {
+          -- Opt to list sources here, when available in mason.
+          "black"
+          },
+          automatic_installation = false,
+          handlers = {},
+      })
+      require("null-ls").setup({
+            sources = {
+                -- Anything not supported by mason.
+            }
+      })   -- require your null-ls config here (example below)
+    end,
+  },
+
+
+
+
+
+
+  config
   -- NOTE: Next Step on Your Neovim Journey: Add/Configure additional "plugins" for kickstart
   --       These are some example plugins that I've included in the kickstart repository.
   --       Uncomment any of the lines below to enable them.
@@ -218,10 +259,13 @@ require('lazy').setup({
 -- NOTE: You can change these options as you wish!
 
 -- Set highlight on search
-vim.o.hlsearch = false
+vim.o.hlsearch = true
 
 -- Make line numbers default
 vim.wo.number = true
+
+-- Make relativenumber
+vim.o.relativenumber = true
 
 -- Enable mouse mode
 vim.o.mouse = 'a'
@@ -254,7 +298,30 @@ vim.o.completeopt = 'menuone,noselect'
 -- NOTE: You should make sure your terminal supports this
 vim.o.termguicolors = true
 
+-- scrolloff setting.
+vim.opt.scrolloff = 8
+
+-- tab settings.
+vim.o.shiftwidth = 4
+vim.o.tabstop = 4
+vim.o.softtabstop = 4
+vim.o.expandtab = true
+vim.o.textwidth = 120
+
 -- [[ Basic Keymaps ]]
+
+local mappings = {
+  { { 'n', 't' }, '<leader>tt', function() require("nvterm.terminal").toggle('horizontal') end },
+  { { 'n', 't' }, '<leader>tv', function() require("nvterm.terminal").toggle('vertical') end },
+  { { 'n', 't' }, '<leader>tf', function() require("nvterm.terminal").toggle('float') end },
+}
+
+local nvterm_opts = { noremap = true, silent = true }
+
+for _, mapping in ipairs(mappings) do
+  vim.keymap.set(mapping[1], mapping[2], mapping[3], nvterm_opts)
+end
+
 
 -- Keymaps for better default experience
 -- See `:help vim.keymap.set()`
@@ -274,6 +341,7 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   group = highlight_group,
   pattern = '*',
 })
+
 
 -- [[ Configure Telescope ]]
 -- See `:help telescope` and `:help telescope.setup()`
@@ -313,7 +381,7 @@ vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { de
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 'c', 'cpp', 'lua', 'python', 'rust', 'vimdoc', 'vim' },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -438,6 +506,33 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   -- pyright = {},
+  pylsp = {
+
+
+    pylsp = {
+      plugins = {
+        -- formatter options
+        --black = { enabled = true },
+        --autopep8 = { enabled = false },
+        --yapf = { enabled = false },
+        -- linter options
+        pylint = { enabled = false, executable = "pylint" },
+        pyflakes = { enabled = true },
+        pycodestyle = { enabled = false },
+        -- type checker
+        pylsp_mypy = { enabled = true },
+        -- auto-completion options
+        jedi_completion = { fuzzy = true },
+        -- import sorting
+        pyls_isort = { enabled = true },
+      },
+    },
+
+
+
+
+
+  },
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
