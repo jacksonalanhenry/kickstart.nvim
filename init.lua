@@ -832,11 +832,12 @@ require('lazy').setup({
     config = function()
       require('nightfox').setup {
         options = {
-          transparent = false, -- Disable setting background
-          dim_inactive = true, -- Non focused panes set to alternative background
+          transparent = true, -- Disable setting background
+          dim_inactive = false, -- Non focused panes set to alternative background
           styles = { -- Style to be applied to different syntax groups
             comments = 'italic', -- Value is any valid attr-list value `:help attr-list`
             keywords = 'bold', -- Value is any valid attr-list value `:help attr-list`
+            types = 'bold', -- Value is any valid attr-list value `:help attr-list`
           },
           inverse = { -- Inverse highlight for different types
             match_paren = true,
