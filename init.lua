@@ -104,8 +104,7 @@ vim.opt.number = true
 --  Experiment for yourself to see if you like it!
 vim.opt.relativenumber = true
 
-vim.keymap.set('n', '<leader>tn',
-function()
+vim.keymap.set('n', '<leader>tn', function()
   vim.wo.number = not vim.wo.number
   vim.wo.relativenumber = not vim.wo.relativenumber
 end, { desc = '[T]oggle line [N]umbers' })
@@ -653,6 +652,7 @@ require('lazy').setup({
       local ensure_installed = vim.tbl_keys(servers or {})
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
+        'black', -- formatting python
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
