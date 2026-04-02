@@ -20,7 +20,7 @@
 =====================================================================
 =====================================================================
 -- ]]
-
+--test
 -- Kickstart Guide:
 
 -- Set <space> as the leader key
@@ -116,10 +116,10 @@ vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagn
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
-vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
-vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
-vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
+-- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<right>', '<cmd>echo "Use l to move!!"<CR>')
+-- vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
+-- vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -392,9 +392,10 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
-      { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
-      'williamboman/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
+      -- { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
+      { 'mason-org/mason.nvim', opts={} }, -- NOTE: Must be loaded before dependants
+      {'mason-org/mason-lspconfig.nvim', tag = "v1.32.0", },
+      {'WhoIsSethDaniel/mason-tool-installer.nvim',commit="31dbcd9"},
 
       -- Useful status updates for LSP.
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -576,7 +577,7 @@ require('lazy').setup({
       --    :Mason
       --
       --  You can press `g?` for help in this menu.
-      require('mason').setup()
+      --require('mason').setup()
 
       -- You can add other tools here that you want Mason to install
       -- for you, so that they are available from within Neovim.
@@ -588,14 +589,21 @@ require('lazy').setup({
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
       require('mason-lspconfig').setup {
+        automatic_installation = true,
         handlers = {
+          -- function(server_name)
+          --   local server = servers[server_name] or {}
+          --   -- This handles overriding only values explicitly passed
+          --   -- by the server configuration above. Useful when disabling
+          --   -- certain features of an LSP (for example, turning off formatting for ts_ls)
+          --   server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+          --   require('lspconfig')[server_name].setup(server)
           function(server_name)
-            local server = servers[server_name] or {}
-            -- This handles overriding only values explicitly passed
-            -- by the server configuration above. Useful when disabling
-            -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
-            require('lspconfig')[server_name].setup(server)
+              vim.lsp.config(server_name, {
+                capabilities = capabilities,
+                on_attach = on_attach,
+              })
+              vim.lsp.enable(server_name) 
           end,
         },
       }
@@ -929,6 +937,13 @@ require('lazy').setup({
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
+  {'ThePrimeagen/vim-be-good'},
+  {'kenn7/vim-arsync',
+    requires = {
+        {'prabirshrestha/async.vim'}
+    }
+  },
+
   { import = 'custom.plugins' },
 }, {
   ui = {
