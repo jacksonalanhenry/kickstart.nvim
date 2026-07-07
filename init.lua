@@ -14,6 +14,9 @@ vim.keymap.set('n', '<leader>tn', function()
   vim.wo.relativenumber = not vim.wo.relativenumber
 end, { desc = '[T]oggle line [N]umbers' })
 
+vim.keymap.set("n", "<leader>e", ":Explore<CR>", { desc = "[E]xplore" })
+
+
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
 
@@ -905,7 +908,7 @@ require('lazy').setup({
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
   {'ThePrimeagen/vim-be-good'},
   {'kenn7/vim-arsync',
-    requires = {
+    dependencies = {
         {'prabirshrestha/async.vim'}
     }
   },
