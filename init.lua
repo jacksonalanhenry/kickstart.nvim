@@ -15,7 +15,9 @@ vim.keymap.set('n', '<leader>tn', function()
 end, { desc = '[T]oggle line [N]umbers' })
 
 vim.keymap.set("n", "<leader>e", ":Explore<CR>", { desc = "[E]xplore" })
-
+vim.keymap.set("n", "<leader>v", "<cmd>rightbelow vsplit | Explore<CR>", {
+  desc = "Open netrw in right split",
+})
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
